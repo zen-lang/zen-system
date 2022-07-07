@@ -60,9 +60,9 @@
   :storage storage}
 
  logs
- {:zen/tags #{zen.system/start}
+ {:zen/tags #{zen.system/start zen.system/logs}
   :engine zen.system/logs
-  :destinations {:stdout {:filter {:lvl :warn}}}}
+  :to {:stdout {:filter {:lvl :warn}}}}
 
  metrics
  {:zen/tags #{zen.system/start}

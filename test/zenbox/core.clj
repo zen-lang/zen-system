@@ -13,12 +13,19 @@
 
   (def ztx (zen/new-context {}))
 
-  (zen/read-ns ztx 'myapp)
-  (zen/errors ztx)
+  (do
+    (def ztx (zen/new-context {}))
+    (zen/read-ns ztx 'myapp)
+    (zen/errors ztx)
+    )
 
   (do
     (zen/read-ns ztx 'myapp)
     (sys/start-system ztx 'myapp/system))
+
+  (zen/read-ns ztx 'zen.system)
+
+  (zen/get-symbol ztx 'zen.system/logs)
 
   (:ctx @ztx)
   (:start @ztx)

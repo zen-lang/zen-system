@@ -1,0 +1,30 @@
+{ns zen.system
+
+ start
+ {:zen/tags #{zen/tag zen/schema}
+  :zen/desc "function to start system"
+  :type zen/map
+  :keys {:ctx {:type zen/keyword}
+         :engine {:type zen/symbol}}}
+
+
+ op-engine
+ {:zen/tags #{zen/tag}}
+
+ op
+ {:zen/tags #{zen/tag zen/schema}
+  :zen/desc "system function definition"
+  :type zen/map
+  :schema-key {:key :engine}
+  :keys {:engine {:type zen/symbol :tags #{op-engine}}}}
+
+ logs
+ {:zen/tags #{zen/tag start zen/schema}
+  :ctx :logs
+  :type zen/map
+  :keys {:to {:type zen/any}}}
+
+ metrics
+ {:zen/tags #{zen/tag start}
+  :ctx :metrics}
+ }

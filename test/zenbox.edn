@@ -1,40 +1,68 @@
 {ns zenbox
 
+ import #{zen.system}
+
  db
- {:ctx :db}
+ {:zen/tags #{zen/tag zen.system/start zen/schema}
+  :ctx :db
+  :type zen/map
+  :values {:type zen/any}}
 
  http
- {:ctx :http}
+ {:zen/tags #{zen/tag zen.system/start zen/schema}
+  :ctx :http
+  :type zen/map
+  :keys {:port {:type zen/integer}
+         :dispatch {:type zen/symbol}}
+  }
 
- storages
- {:ctx :storages}
+ storage
+ {:zen/tags #{zen/tag zen.system/start zen/schema}
+  :ctx :storages
+  :type zen/map
+  :keys {:repos {:type zen/map
+                 :values {:type zen/symbol}}}}
 
  seeds
- {}
+ {:zen/tags #{zen/tag zen.system/start}
+  }
 
  api
  {:zen/tags #{zen/tag}}
 
  jsonb-repo
- {:zen/tags #{zen/tag}
-  :zen/desc "jsonb repository impl"}
+ {:zen/tags #{zen/tag zen/schema}
+  :zen/desc "jsonb repository impl"
+  :type zen/map
+  :keys {:schema {:type zen/symbol :tags #{zen/schema}}}
+  }
 
  httpkit
- {:zen/tags #{zen/tag}
+ {:zen/tags #{zen/tag zen.system/start zen.system/op-engine}
   :zen/desc "http server impl"
   :ctx :http}
 
  jsonb-search
- {:zen/tags #{zen/tag}
-  :zen/desc "search endpoint"}
+ {:zen/tags #{zen/tag zen.system/op-engine zen/schema}
+  :zen/desc "search endpoint"
+  :type zen/map
+  :require #{:repo}
+  :keys {:repo {:type zen/symbol}}}
 
  jsonb-create
- {:zen/tags #{zen/tag}
-  :zen/desc "search endpoint"}
+ {:zen/tags #{zen/tag zen.system/op-engine zen/schema}
+  :zen/desc "search endpoint"
+  :type zen/map
+  :require #{:repo}
+  :keys {:repo {:type zen/symbol}
+         :schema {:type zen/symbol :tags #{zen/schema}}}}
 
  open-api
- {:zen/tags #{zen/tag}
-  :zen/desc "openapi endpoint"}
+ {:zen/tags #{zen/tag zen.system/op-engine zen/schema}
+  :zen/desc "openapi endpoint"
+  :type zen/map
+  :require #{:routes}
+  :keys {:routes {:type zen/symbol :tags #{api}}}}
 
  middleware
  {:zen/tags #{zen/tag}
@@ -44,18 +72,6 @@
  {:zen/tags #{zen/tag}
   :zen/desc "mw impl"}
 
- op
- {:zen/tags #{zen/tag}
-  :zen/desc "op impl"}
-
- start
- {:zen/tags #{zen/tag}
-  :zen/desc "start op impl"}
-
-
- storage
- {:zen/tags #{zen/tag}
-  :zen/desc "start op impl"}
 
  rest-op
  {:zen/tags #{zen/tag}

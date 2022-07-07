@@ -1,0 +1,104 @@
+{ns myapp
+ import #{zen.system zenbox}
+
+ patient-repo
+ {:zen/tags #{zenbox/repo}
+  :table "patients"
+  :engine zenbox/jsonb-repo}
+
+ patient-search
+ {:zen/tags #{zen.system/op zenbox/rest-op}
+  :engine zenbox/jsonb-search
+  :repo patient-repo}
+
+ Patient
+ {:zen/tags #{zen/schema}
+  :type zen/map
+  :values {:type zen/any}
+  :require #{:name}
+  :keys {:name {:type zen/vector
+                :minItems 1
+                :every {:type zen/map
+                        :require #{:family :given}
+                        :keys {:family {:type zen/string}
+                               :given {:type zen/string}}}}}}
+
+ patient-create
+ {:zen/tags #{zen.system/op zenbox/rest-op}
+  :engine zenbox/jsonb-create
+  :schema Patient
+  :repo patient-repo}
+
+ user-repo
+ {:zen/tags #{zenbox/repo}
+  :table "users"
+  :engine zenbox/jsonb-repo}
+
+ user-search
+ {:zen/tags #{zen.system/op zenbox/rest-op}
+  :engine zenbox/jsonb-search
+  :repo user-repo}
+
+ user-mw
+ {:zen/tags #{zenbox/middleware}
+  :engine zenbox/user-mw
+  :repo user-repo}
+
+ index
+ {:zen/tags #{zen.system/op zenbox/rest-op}
+  :engine zenbox/open-api
+  :routes dispatch}
+
+ dispatch
+ {:zen/tags #{zenbox/api}
+  :engine zenbox/api
+  :middlewares [user-mw]
+  :routes {:GET index
+           "Patient" {:GET patient-search
+                      :POST patient-create}
+           "User"    {:GET user-search}}
+  :storage storage}
+
+ logs
+ {:zen/tags #{zen.system/start}
+  :engine zen.system/logs
+  :destinations {:stdout {:filter {:lvl :warn}}}}
+
+ metrics
+ {:zen/tags #{zen.system/start}
+  :engine zen.system/metrics}
+
+ server
+ {:zen/tags #{zen.system/start zenbox/http}
+  :engine zenbox/httpkit
+  :port 8080
+  :dispatch dispatch}
+
+ storage
+ {:zen/tags #{zen.system/start zenbox/storage}
+  :engine zenbox/storage
+  :repos {:Patient patient-repo
+          :User    user-repo}}
+
+ db
+ {:zen/tags #{zen.system/start zenbox/db}
+  :zen/desc "Connection to database"
+  :engine zenbox/db
+  :database "aidbox"
+  :connection
+  {:dbname   "postgres"
+   :username "postgres"
+   :password "postgres"
+   :dataSourceProperties {:socketTimeout 30}}}
+
+ migrations
+ {:engine zenbox/migrations
+  :migrations []}
+
+ seeds
+ {:engine zenbox/seeds
+  :seeds {:users [{:password "password" :id "admin"}]}}
+
+ system
+ {:start  [metrics logs db storage migrations seeds server]}}
+

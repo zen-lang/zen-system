@@ -1,0 +1,73 @@
+#TITLE: Zen System
+
+The system consists of runtime registry (ctx),
+zen models and system functions - operations.
+
+System start by populating registry.
+You can interact with system by operations.
+
+start - chain of ops on empty ztx
+set of ops on ztx
+
+
+* Principles: Trade-offs
+
+** Functions over components
+** Discovery over explicit linking
+** Convention over configuration
+
+
+The system consists of functions, zen models and runtime registry.
+
+Runtime context is just a map in atom.
+
+There are special start functions, which are initializing context by adding
+some resources like db connection or http server.
+
+All functions are 
+
+There generic function (operation, op) signature:
+
+(op ztx op-definition request). 
+
+Functions may be specialized:
+
+(rest ztx op-def request)
+(rpc  ztx op-def request)
+
+myrpc
+{:zen/tags #{system/op system/rpc}
+ :params {}
+ :result {}}
+ 
+search-pt
+{:zen/tags #{system/op system/http}
+ :request {:headers {} :params {} :body {}}
+ :response {}}
+
+repos
+{:repos #{pt-repo enc-repo}}
+
+init-repos
+{:storage repos}
+ 
+http/rpc
+{:rpcs #{myrpc}}}
+
+http/http
+{:routes {"Patient" {:GET search-pt}}}
+
+(call-op ztx myns/op {:params params})
+
+(call-op ztx http/rpc {:method "myapp/myrpc" :params {}}) 
+=> (call-op ztx myapp/myrpc {:params params})
+
+
+(call-op ztx http/http {:uri "/Patient" :params {}}) 
+=> (call-op ztx myapp/search-pt {:uri "" params {} :headers {}})
+
+Internally there are could be set of utility functions getting ztx as first parameter:
+
+(zen/log ztx :ev params)
+(db/query ztx opts {:query query}) 
+(repo/save ztx  {:resource resource}) 

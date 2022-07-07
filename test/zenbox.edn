@@ -1,0 +1,78 @@
+{ns zenbox
+
+ db
+ {:ctx :db}
+
+ http
+ {:ctx :http}
+
+ storages
+ {:ctx :storages}
+
+ seeds
+ {}
+
+ api
+ {:zen/tags #{zen/tag}}
+
+ jsonb-repo
+ {:zen/tags #{zen/tag}
+  :zen/desc "jsonb repository impl"}
+
+ httpkit
+ {:zen/tags #{zen/tag}
+  :zen/desc "http server impl"
+  :ctx :http}
+
+ jsonb-search
+ {:zen/tags #{zen/tag}
+  :zen/desc "search endpoint"}
+
+ jsonb-create
+ {:zen/tags #{zen/tag}
+  :zen/desc "search endpoint"}
+
+ open-api
+ {:zen/tags #{zen/tag}
+  :zen/desc "openapi endpoint"}
+
+ middleware
+ {:zen/tags #{zen/tag}
+  :zen/desc "mw impl"}
+
+ user-mw
+ {:zen/tags #{zen/tag}
+  :zen/desc "mw impl"}
+
+ op
+ {:zen/tags #{zen/tag}
+  :zen/desc "op impl"}
+
+ start
+ {:zen/tags #{zen/tag}
+  :zen/desc "start op impl"}
+
+
+ storage
+ {:zen/tags #{zen/tag}
+  :zen/desc "start op impl"}
+
+ rest-op
+ {:zen/tags #{zen/tag}
+  :zen/desc "op impl"}
+
+ request
+ {}
+
+ repo
+ {:zen/tags #{zen/tag}}
+
+
+ migrations
+ {:ctx {:type zen/map
+        :require #{:db}
+        :keys {:db {:type zen/symbol :tags #{db}}
+               :logs {:type zen/symbol}}}}
+
+ }
+

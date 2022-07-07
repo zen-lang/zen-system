@@ -1,5 +1,6 @@
 (ns zenbox.repo
   (:require [zen.system :as sys]
+            [cheshire.core]
             [zen.core :as zen]
             [zenbox.db :as db]))
 
@@ -53,9 +54,16 @@
     (sys/log ztx :repo/create-table {:table (:table cfg)})
     (db/query ztx [q])))
 
-
 (defmethod save
   'zenbox/jsonb-repo
   [ztx repo resource & [opts]]
-  )
+  (let [q (format "insert into \"%s\" (resource) values (?::jsonb) returning *" (:table repo))
+        data (db/query ztx [q (cheshire.core/generate-string resource)])]
+    (first data)))
+
+(defmethod search
+  'zenbox/jsonb-repo
+  [ztx repo query & [opts]]
+  (let [q (format "select * from \"%s\"" (:table repo))]
+    (db/query ztx [q])))
 

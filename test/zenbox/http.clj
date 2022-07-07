@@ -1,6 +1,7 @@
 (ns zenbox.http
   (:require [zen.core :as zen]
             [zen.system :as sys]
+            [zenbox.repo :as repo]
             [zenbox.db :as db]
             [cheshire.core]
             [org.httpkit.server :as server]
@@ -33,17 +34,15 @@
 (defmethod http-op 'zenbox/jsonb-search
   [ztx cmp-def req]
   (let [repo (zen/get-symbol ztx (:repo cmp-def))
-        q (format "select * from \"%s\"" (:table repo))
-        data (db/query ztx [q])]
-    {:body {:data data :query q}
+        data (repo/search ztx repo {} {})]
+    {:body data
      :status 200}))
 
 (defmethod http-op 'zenbox/jsonb-create
   [ztx cmp-def req]
   (let [repo (zen/get-symbol ztx (:repo cmp-def))
-        q (format "insert into \"%s\" (resource) values (?::jsonb) returning *" (:table repo))
-        data (db/query ztx [q (cheshire.core/generate-string (:resource req))])]
-    {:body {:data data :query q}
+        data (repo/save ztx repo (:resource req) {})]
+    {:body data
      :status 200}))
 
 (defmethod sys/op
